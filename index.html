@@ -153,16 +153,69 @@ main{padding:14px 20px 32px}
 .dayrow .dh.vac{background:var(--vac-bg);color:var(--vac-fg)}
 .dayrow .dh em{display:block;font-style:normal;font-size:9.5px;font-weight:700;letter-spacing:.2px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pblock{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);margin-bottom:12px;overflow:hidden}
-.ph-in{position:sticky;left:0;width:max-content;display:flex;align-items:center;gap:10px;padding:11px 14px}
-.phours{border-bottom:1px solid var(--line)}
-.phours .ph-in{padding:0 14px 11px;gap:12px;flex-wrap:wrap}
+.pblock-h{border-bottom:1px solid var(--line)}
+.pblock.closed .pblock-h{border-bottom:none}
+.ph-in{position:sticky;left:0;width:max-content;display:grid;
+  grid-template-columns:18px minmax(196px,220px) minmax(320px,372px) minmax(348px,404px) auto;
+  align-items:center;gap:18px;padding:12px 14px}
+.pid{display:flex;align-items:center;gap:9px;min-width:0;cursor:pointer}
+.pteam{display:grid;grid-template-columns:26px minmax(0,1fr) 34px minmax(0,1fr);gap:3px 8px;align-items:baseline;cursor:pointer;border-radius:var(--r);padding:5px 7px;margin:-5px -7px}
+.pteam:hover{background:var(--surface-2)}
+.pteam .k{font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.pteam .v{font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pteam .v i{font-style:normal;color:var(--muted);font-weight:500}
+.pteam .v.vide{color:var(--muted-2);font-weight:500}
+.pteam .v.manque{color:var(--red);font-weight:600}
+.pteam .v.alerte{color:var(--amber-fg)}
+.phrs{display:flex;flex-direction:column;gap:6px;min-width:0}
+.hgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px 10px}
+.hl{font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;text-align:right}
+.hv{font-size:12.5px;font-weight:600;color:var(--ink);text-align:right;white-space:nowrap}
+.hv.tot{color:var(--green)}
+.hv.ok{color:var(--ok)}.hv.bad{color:var(--red)}
+.hv i{display:block;font-style:normal;font-size:9.5px;font-weight:500;color:var(--sub-fg)}
+.pact{display:flex;gap:7px}
+/* densité : le balisage ne change pas, on masque et on resserre */
+.d-compact .ph-in{padding:8px 14px;gap:14px;grid-template-columns:16px minmax(184px,206px) minmax(226px,268px) minmax(310px,352px) auto}
+.d-compact .hrs{display:none}
+.d-compact .pteam>*:nth-child(n+5){display:none}
+.d-compact .pn{font-size:13px}
+.d-compact .pn small{font-size:11px}
+.d-compact .pcell{min-height:46px}
+.d-dense .ph-in{padding:4px 14px;gap:12px;grid-template-columns:14px minmax(168px,190px) minmax(118px,140px) minmax(286px,324px) auto}
+.d-dense .hrs{display:none}
+.d-dense .pteam{grid-template-columns:22px minmax(0,1fr);padding:2px 5px;margin:-2px -5px}
+.d-dense .pteam>*:nth-child(n+3){display:none}
+.d-dense .pblock .hl{display:none}
+.phead{display:none;border:1px solid transparent}   /* compense la bordure des blocs projet */
+.d-dense .phead{display:block;margin-bottom:5px}
+.d-dense .phead .ph-in{padding-top:0;padding-bottom:4px;align-items:end}
+.phead .hl2{font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.d-dense .hv{font-size:11.5px}
+.d-dense .hv i{display:none}
+.d-dense .pn{font-size:12.5px;display:flex;align-items:baseline;gap:7px;white-space:nowrap}
+.d-dense .pn small{display:inline;font-size:11px}
+.d-dense .pdot{width:9px;height:9px}
+.d-dense .pid{gap:7px}
+.d-dense .caret{font-size:9px;padding:1px}
+.d-dense .passign{height:24px;padding:0 9px;font-size:11.5px}
+.d-dense .pblock{margin-bottom:6px}
+.d-dense .pcell{min-height:40px}
+.d-compact .pblock{margin-bottom:8px}
+.fchip{display:inline-flex;align-items:center;gap:7px;background:var(--green-soft);border:1px solid var(--green-ring);color:var(--green);border-radius:999px;padding:4px 6px 4px 11px;font-size:12px;font-weight:600}
+.fchip button{border:none;background:transparent;color:inherit;cursor:pointer;font-size:13px;font-weight:700;line-height:1;padding:0 3px}
+@media(max-width:1180px){
+  .ph-in{grid-template-columns:18px minmax(0,1fr) auto;
+    grid-template-areas:"c id act" ". team team" ". hrs hrs";row-gap:11px}
+  .caret{grid-area:c}.pid{grid-area:id}.pteam{grid-area:team}.phrs{grid-area:hrs}.pact{grid-area:act}
+}
 .caret{border:none;background:transparent;color:var(--muted-2);font-size:11px;cursor:pointer;padding:3px 2px;line-height:1;flex:none;transition:transform .14s ease}
 .pblock.closed .caret{transform:rotate(-90deg)}
 .pblock.closed .pgrid{display:none}
-.pblock.closed .phours{border-bottom:none}
 .pdot{width:11px;height:11px;border-radius:3px;flex:none}
-.pn{font-weight:700;font-size:14px;color:var(--ink);line-height:1.2;cursor:pointer}
-.pn small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.pn{font-weight:700;font-size:14px;color:var(--ink);line-height:1.25;min-width:0}
+.pn small{display:block;font-weight:500;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pn .pstat{margin-left:7px}
 .pstat{font-size:10.5px;font-weight:700;border-radius:999px;padding:2px 8px;background:var(--ferie-bg);color:var(--ferie-fg);text-transform:uppercase;letter-spacing:.3px}
 .staff{font-size:12px;color:var(--muted);font-weight:500;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r);padding:5px 10px;cursor:pointer}
 .staff:hover{background:var(--surface-2)}
@@ -175,7 +228,7 @@ main{padding:14px 20px 32px}
 .passign:hover{background:var(--green-soft)}
 .ploc{border:1px dashed var(--sub-bd);background:var(--surface);color:var(--sub-fg);font-family:inherit;font-weight:600;font-size:12.5px;border-radius:var(--r);height:30px;padding:0 12px;cursor:pointer}
 .ploc:hover{background:var(--surface-2)}
-.hrs{width:132px;height:6px;border-radius:999px;background:var(--surface-2);overflow:hidden;display:flex;flex:none}
+.hrs{width:100%;height:6px;border-radius:999px;background:var(--surface-2);overflow:hidden;display:flex;flex:none}
 .hrs i{display:block;height:100%;align-self:stretch}
 .hrs i.done{background:var(--green)}
 .hrs i.plan{background:repeating-linear-gradient(45deg,var(--green),var(--green) 2px,var(--green-soft) 2px,var(--green-soft) 5px)}
@@ -369,6 +422,10 @@ select:focus,input:focus{outline:2px solid var(--green-ring);outline-offset:-1px
   <div class="ctxbar">
     <span class="ctl-lbl" id="horLbl">Horizon</span>
     <div class="seg" id="horSeg"><button data-h="1">1 sem</button><button data-h="2">2</button><button data-h="4" class="on">4</button><button data-h="8">8</button><button data-h="12">12</button></div>
+    <span class="ctl-lbl">Densité</span>
+    <div class="seg" id="densSeg"><button data-d="confort" class="on">Confort</button><button data-d="compact">Compact</button><button data-d="dense">Dense</button></div>
+    <button class="btn" id="btnCP">Chargé de projet</button>
+    <span id="fchip"></span>
     <button class="btn" id="btnFold">Tout réduire</button>
     <button class="btn" id="btnCMs">Contremaîtres</button>
     <button class="btn" id="btnCCQ">Calendrier CCQ</button>
@@ -450,6 +507,19 @@ let exclureChomes=true;
 
 /* ---------- données de démonstration ----------
    budget + faites viendraient de Maestro ; cm de Ops (Somtech) ; W de Ma Place RH */
+/* Chargé de projet, surintendant et contremaître viennent de la FICHE PROJET
+   de Somtech. Ce prototype les laisse modifiables pour la démonstration, mais
+   en production cet outil les lit : il n'en est pas la source. Seule
+   l'affectation datée du contremaître (CMA) est une décision d'opérations,
+   donc écrite ici. */
+let CPR=[
+  {id:'p1',nom:'Marie-Claude Lavoie'},{id:'p2',nom:'Jonathan Bergeron'},{id:'p3',nom:'Caroline Tremblay'},
+];
+let SUR=[
+  {id:'u1',nom:'Rémi Harvey'},{id:'u2',nom:'Denis Lapointe'},
+];
+const cpr=id=>CPR.find(x=>x.id===id);
+const sur=id=>SUR.find(x=>x.id===id);
 let CM=[
   {id:'c1',nom:'Jean-François Tremblay'},
   {id:'c2',nom:'Stéphane Bergeron'},
@@ -457,11 +527,19 @@ let CM=[
 ];
 const cmr=id=>CM.find(c=>c.id===id);
 const P=[
-  {id:'23-003', nom:'Camions Avantage', statut:'actif', c:'#2F7D45', budget:1240, faites:806},
-  {id:'25-030', nom:'Pharmaprix Chicoutimi-Nord', statut:'actif', c:'#3A6EA5', budget:3100, faites:1124},
-  {id:'24-018', nom:'Entrepôt régional', statut:'actif', c:'#7A4FA3', budget:980, faites:938},
-  {id:'26-055', nom:'CDEGP Desjardins', statut:'à venir', c:'#C6820A', budget:2400, faites:0},
-  {id:'ATEL', nom:'Atelier / préfab', statut:'interne', c:'#5B6472', budget:null, faites:312},
+  {id:'23-003', nom:'Camions Avantage', statut:'actif', c:'#2F7D45', budget:1240, faites:806, cp:'p1', su:'u1'},
+  {id:'25-030', nom:'Pharmaprix Chicoutimi-Nord', statut:'actif', c:'#3A6EA5', budget:3100, faites:1124, cp:'p2', su:'u2'},
+  {id:'24-018', nom:'Entrepôt régional', statut:'actif', c:'#7A4FA3', budget:980, faites:938, cp:'p3', su:'u1'},
+  {id:'26-055', nom:'CDEGP Desjardins', statut:'à venir', c:'#C6820A', budget:2400, faites:0, cp:'p2', su:null},
+  {id:'ATEL', nom:'Atelier / préfab', statut:'interne', c:'#5B6472', budget:null, faites:312, cp:null, su:null},
+  {id:'25-012', nom:'Garage municipal Jonquière', statut:'actif', c:'#B45309', budget:1860, faites:1402, cp:'p1', su:'u1'},
+  {id:'25-044', nom:'Caserne de pompiers Alma', statut:'actif', c:'#0F766E', budget:2240, faites:618, cp:'p3', su:'u2'},
+  {id:'24-031', nom:'Agrandissement école Saint-Félicien', statut:'actif', c:'#6D28D9', budget:3480, faites:3102, cp:'p2', su:'u1'},
+  {id:'26-008', nom:'Centre de tri Roberval', statut:'à venir', c:'#1D4ED8', budget:1520, faites:0, cp:'p1', su:null},
+  {id:'26-019', nom:'Clinique médicale Dolbeau', statut:'à venir', c:'#BE185D', budget:980, faites:0, cp:'p3', su:null},
+  {id:'26-041', nom:'Entrepôt frigorifique La Baie', statut:'à venir', c:'#065F46', budget:2760, faites:0, cp:'p2', su:null},
+  {id:'25-061', nom:'Réfection toiture aréna Kénogami', statut:'actif', c:'#92400E', budget:640, faites:588, cp:'p1', su:'u2'},
+  {id:'26-072', nom:'Poste de transformation Chibougamau', statut:'à venir', c:'#4338CA', budget:4100, faites:0, cp:null, su:null},
 ];
 /* Un contremaître est affecté à un projet pour une période — c'est cette date
    de fin qui donne sa date de libération, l'information que cherche la
@@ -571,6 +649,9 @@ let view='planning', horizon=4, anchor=mondayOf(TODAY), selDay=iso(TODAY), poolM
 const collapsed=new Set();   // projets dont le détail est fermé
 let monthRef=new Date(TODAY.getFullYear(),TODAY.getMonth(),15,12,0,0);
 let selCol=null;                       // journée sélectionnée dans le planning
+let densite='confort';                 // confort | compact | dense
+const filtreCP=new Set();              // vide = tous les chargés de projet
+const projVisibles=()=>P.filter(x=>!filtreCP.size||filtreCP.has(x.cp||'__sans'));
 // la journée à laquelle le panneau des ressources se rapporte
 const jourCible=()=> view==='jour' ? selDay : (view==='planning' ? selCol : null);
 function etatJour(wid,k){
@@ -737,33 +818,44 @@ function renderPoolCrews(){
 /* ---------- entête projet ---------- */
 function projHeader(p){
   const av=heuresAVenir(p.id), st=heuresST(p.id), tot=p.faites+av, b=p.budget;
-  const chefs=chefsSur(p.id);
   const aCM=cmCourant(p.id), cm=aCM?cmr(aCM.cm):null;
-  const fp=finPlanifiee(p.id);
-  const decouvert=aCM&&fp&&fp>aCM.fin;
-  let bar='', ecart='';
+  const fp=finPlanifiee(p.id), decouvert=aCM&&fp&&fp>aCM.fin;
+  const chefs=chefsSur(p.id), cp=p.cp?cpr(p.cp):null, su=p.su?sur(p.su):null;
+  const court=x=>{const t=x.split(' ');return t[0]+' '+t[t.length-1][0]+'.';};
+
+  let bar='', ecart='<span class="hv">—</span>';
   if(b){
     const d=Math.min(100,p.faites/b*100), a=Math.min(100-d,av/b*100), o=tot>b?Math.min(100,(tot-b)/b*100):0;
     bar=`<span class="hrs" title="Fait / planifié / budget"><i class="done" style="width:${d}%"></i><i class="plan" style="width:${a}%"></i>${o?`<i class="over" style="width:${o}%"></i>`:''}</span>`;
     const e=b-tot;
-    ecart=`<em class="${e<0?'bad':'ok'}">${e<0?'dépasse de ':'reste '}${nh(Math.abs(e))}</em>`;
-  }
+    ecart=`<span class="hv ${e<0?'bad':'ok'}">${e<0?'−':''}${nh(Math.abs(e))}</span>`;
+  } else bar=`<span class="hrs"></span>`;
+
+  const role=(k,v,cls)=>`<span class="k">${k}</span><span class="v ${cls||''}">${v}</span>`;
   return `<div class="pblock-h"><div class="ph-in">
       <button class="caret" data-tog="${p.id}" title="Développer / réduire le détail">▼</button>
-      <span class="pdot" style="background:${p.c}"></span>
-      <span class="pn" data-tog="${p.id}">${p.id}<small>${p.nom}</small></span>
-      ${p.statut!=='actif'?`<span class="pstat">${p.statut}</span>`:''}
-      <span class="staff ${decouvert?'alerte':''}" data-cm="${p.id}" title="${decouvert?'Travail planifié au-delà de la fin du contremaître':'Affecter un contremaître'}">CM ${cm?`<b>${shortName(cm)}</b> <span class="jq">jusqu'au ${fmtDate(parseIso(aCM.fin))}</span>${decouvert?' ⚠':''}`:'<span class="none">à nommer</span>'}${chefs.length?` · Chef${chefs.length>1?'s':''} <b>${chefs.map(shortName).join(', ')}</b>`:''}</span>
-      <button class="passign" data-proj="${p.id}">Affecter</button>
-      <button class="ploc" data-proj="${p.id}">＋ Location</button>
-    </div></div>
-    <div class="phours"><div class="ph-in">
-      ${bar}
-      <span class="hm">Budget <b>${b?nh(b):'—'}</b></span>
-      <span class="hm">Faites <b>${nh(p.faites)}</b></span>
-      <span class="hm">À venir <b>${nh(av)}</b></span>
-      ${st?`<span class="hm st">dont location <b>${nh(st)}</b></span>`:''}
-      <span class="hm tot">Total <b>${nh(tot)}</b> ${ecart}</span>
+      <div class="pid" data-tog="${p.id}" title="${p.id} — ${p.nom}">
+        <span class="pdot" style="background:${p.c}"></span>
+        <span class="pn">${p.id}${p.statut!=='actif'?`<span class="pstat">${p.statut}</span>`:''}<small>${p.nom}</small></span>
+      </div>
+      <div class="pteam" data-cm="${p.id}" title="Modifier l'équipe de projet">
+        ${role('CP', cp?court(cp.nom):'—', cp?'':'vide')}
+        ${role('CM', cm?`${court(cm.nom)} <i>${fmtDate(parseIso(aCM.fin))}</i>${decouvert?' ⚠':''}`:'à nommer', cm?(decouvert?'alerte':''):'manque')}
+        ${role('SU', su?court(su.nom):'—', su?'':'vide')}
+        ${role('Chef', chefs.length?chefs.map(shortName).join(', '):'—', chefs.length?'':'vide')}
+      </div>
+      <div class="phrs">
+        ${bar}
+        <div class="hgrid">
+          <span class="hl">Budget</span><span class="hl">Faites</span><span class="hl">À venir</span><span class="hl">Total</span><span class="hl">Reste</span>
+          <span class="hv">${b?nh(b):'—'}</span>
+          <span class="hv">${nh(p.faites)}</span>
+          <span class="hv">${nh(av)}${st?`<i>dont ${nh(st)} loc.</i>`:''}</span>
+          <span class="hv tot">${nh(tot)}</span>
+          ${ecart}
+        </div>
+      </div>
+      <div class="pact"><button class="passign" data-proj="${p.id}">Affecter</button></div>
     </div></div>`;
 }
 
@@ -777,7 +869,10 @@ function renderPlanning(){
     h+=`<div class="dh ${x.first?'wkstart':''} ${x.k===selCol?'selcol':fe?'ferie':va?'vac':x.k===TODAY_ISO?'today':''}" data-col="${x.k}" title="${fe||(va?va.nom:'')||'Sélectionner cette journée'}">`
       +`${JJ[(x.d.getDay()+6)%7]}<small>${fmtDate(x.d)}</small>${fe?`<em>${fe}</em>`:va?`<em>Vacances</em>`:''}</div>`; });
   h+=`</div></div>`;
-  P.forEach(p=>{
+  h+=`<div class="phead"><div class="ph-in"><span></span><span class="hl2">Projet</span><span class="hl2">Chargé de projet</span>
+      <div class="hgrid"><span class="hl">Budget</span><span class="hl">Faites</span><span class="hl">À venir</span><span class="hl">Total</span><span class="hl">Reste</span></div>
+      <span></span></div></div>`;
+  projVisibles().forEach(p=>{
     h+=`<div class="pblock ${collapsed.has(p.id)?'closed':''}">`+projHeader(p)+`<div class="pgrid" style="grid-template-columns:${cols}">`;
     days.forEach(x=>{
       const mem=W.filter(w=>{const c=cell(w.id,x.k);return c.am===p.id||c.pm===p.id;});
@@ -794,7 +889,7 @@ function renderDay(){
   let h=`<div class="hdr"><div class="dayrow" style="grid-template-columns:repeat(2,1fr)">`
     +`<div class="dh ${cls}">Avant-midi${ch?`<em>${ch}</em>`:''}</div>`
     +`<div class="dh ${cls}">Après-midi${ch?`<em>${ch}</em>`:''}</div></div></div>`;
-  P.forEach(p=>{
+  projVisibles().forEach(p=>{
     h+=`<div class="pblock ${collapsed.has(p.id)?'closed':''}">`+projHeader(p)+`<div class="pgrid" style="grid-template-columns:repeat(2,1fr)">`;
     ['am','pm'].forEach(half=>{
       const mem=W.filter(w=>cell(w.id,selDay)[half]===p.id);
@@ -834,12 +929,11 @@ function locChips(pid,k){
 }
 function wire(){
   $('#board').querySelectorAll('.passign').forEach(b=>b.onclick=()=>openAssign(b.dataset.proj));
-  $('#board').querySelectorAll('.staff').forEach(b=>b.onclick=()=>openCM(b.dataset.cm));
+  $('#board').querySelectorAll('[data-cm]').forEach(b=>b.onclick=()=>openCM(b.dataset.cm));
   $('#board').querySelectorAll('.dh[data-col]').forEach(b=>b.onclick=()=>{
     selCol = selCol===b.dataset.col ? null : b.dataset.col; render(); });
   $('#board').querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{
     const id=b.dataset.tog; collapsed.has(id)?collapsed.delete(id):collapsed.add(id); render(); });
-  $('#board').querySelectorAll('.ploc').forEach(b=>b.onclick=()=>openLoc(b.dataset.proj));
   $('#board').querySelectorAll('.lchip').forEach(ch=>{
     const {p:pid,k,s:st}=ch.dataset;
     dragify(ch,()=>({st:st,nb:(locDe(pid,k)||{})[st]||1,label:str(st).nom}),()=>openLocChip(pid,k,st));
@@ -853,11 +947,19 @@ function render(){
   const pool=view!=='mois';
   $('#pool').style.display=pool?'':'none';
   $('#horLbl').style.display=view==='planning'?'':'none';
+  const nf=filtreCP.size;
+  $('#btnCP').style.display=view==='mois'?'none':'';
+  $('#densSeg').previousElementSibling.style.display=view==='mois'?'none':'';
+  $('#densSeg').style.display=view==='mois'?'none':'';
+  $('#fchip').innerHTML = nf
+    ? `<span class="fchip">${projVisibles().length} projet${projVisibles().length>1?'s':''} sur ${P.length}<button id="fx" title="Retirer le filtre">✕</button></span>` : '';
+  if($('#fx')) $('#fx').onclick=()=>{ filtreCP.clear(); render(); };
   const tous=collapsed.size>=P.length;
   $('#btnFold').style.display=view==='mois'?'none':'';
   $('#legend').style.display=view==='jour'?'none':'';
   $('#btnFold').textContent=tous?'⌄ Tout développer':'⌃ Tout réduire';
   $('#horSeg').style.display=view==='planning'?'':'none';
+  $('#board').className='boardinner d-'+densite;   // ne pas perdre .boardinner (min-width:max-content)
   if(view==='planning') renderPlanning(); else if(view==='jour') renderDay(); else renderMonth();
   if(pool) renderPool();
   const end=addDays(anchor,horizon*7-3), mref=monthRef;
@@ -947,7 +1049,14 @@ function openCM(pid){
   const p=proj(pid), fp=finPlanifiee(pid), deja=CMA.filter(a=>a.p===pid&&a.fin>=TODAY_ISO).sort((x,y)=>x.debut<y.debut?-1:1);
   let sel=CM[0].id;
   const d0=TODAY_ISO, f0=fp&&fp>TODAY_ISO?fp:iso(addDays(TODAY,90));
-  openSheet(`<h3>Contremaître — ${p.id}</h3><p>${p.nom}. Un contremaître est affecté au projet pour une période ; sa date de fin devient sa date de libération.</p>
+  openSheet(`<h3>Équipe de projet — ${p.id}</h3><p>${p.nom}</p>
+    <div class="note">Chargé de projet et surintendant proviendront de la <b>fiche projet</b> de Somtech ; cet outil les lira. Ils sont modifiables ici le temps du prototype. L'affectation du contremaître, elle, est une décision d'opérations et reste écrite ici.</div>
+    <div class="row2">
+      <div class="fld"><label>Chargé de projet</label><select id="selCP"><option value="">—</option>${CPR.map(x=>`<option value="${x.id}" ${p.cp===x.id?'selected':''}>${x.nom}</option>`).join('')}</select></div>
+      <div class="fld"><label>Surintendant</label><select id="selSU"><option value="">—</option>${SUR.map(x=>`<option value="${x.id}" ${p.su===x.id?'selected':''}>${x.nom}</option>`).join('')}</select></div>
+    </div>
+    <div style="height:1px;background:var(--line);margin:4px 0 16px"></div>
+    <p style="margin-bottom:12px"><b style="color:var(--ink);font-size:14px">Contremaître</b><br>Affecté pour une période ; sa date de fin devient sa date de libération.</p>
     ${deja.length?`<div class="fld"><label>Affectations en cours</label><div class="wlist">${deja.map(a=>{const i=CMA.indexOf(a);
       return `<div class="ccq-row"><span class="nn"><b>${cmr(a.cm).nom}</b><br>du ${fmtDate(parseIso(a.debut))} au ${fmtDate(parseIso(a.fin))} ${parseIso(a.fin).getFullYear()}</span><button class="rm" data-a="${i}" title="Retirer">✕</button></div>`;}).join('')}</div></div>`:''}
     <div class="fld"><label>Contremaître — le premier libre en tête</label><div class="wlist" id="cl">${CM.slice().map(c=>({c:c,l:libreLe(c.id)})).sort((x,y)=>(x.l?x.l.getTime():0)-(y.l?y.l.getTime():0)).map(({c,l})=>{
@@ -959,6 +1068,8 @@ function openCM(pid){
     <div class="preview" id="pv">—</div>
     <button class="cta" id="go">Affecter le contremaître</button><button class="link" id="cx">Fermer</button>`);
   $('#cx').onclick=close;
+  $('#selCP').onchange=()=>{ p.cp=$('#selCP').value||null; render(); };
+  $('#selSU').onchange=()=>{ p.su=$('#selSU').value||null; render(); };
   $('#sheet').querySelectorAll('.rm').forEach(b=>b.onclick=()=>{ CMA.splice(+b.dataset.a,1); close(); render(); openCM(pid); });
   const paint=()=>$('#cl').querySelectorAll('.wrow').forEach(r=>r.classList.toggle('on',r.dataset.c===sel));
   $('#cl').querySelectorAll('.wrow').forEach(r=>r.onclick=()=>{ sel=r.dataset.c; paint(); upd(); });
@@ -1034,6 +1145,34 @@ function openCrew(existing){
     close(); render(); };
 }
 $('#btnFold').onclick=()=>{ if(collapsed.size>=P.length) collapsed.clear(); else P.forEach(p=>collapsed.add(p.id)); render(); };
+$('#densSeg').querySelectorAll('button').forEach(b=>b.onclick=()=>{ densite=b.dataset.d;
+  $('#densSeg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); render(); });
+function openFiltreCP(){
+  const sans=P.filter(x=>!x.cp).length;
+  openSheet(`<h3>Filtrer par chargé de projet</h3><p>Coche un ou plusieurs chargés de projet. Sans sélection, tous les projets sont affichés.</p>
+    <div class="wlist" id="fl" style="max-height:300px">${CPR.map(c=>{const nb=P.filter(x=>x.cp===c.id).length;
+      return `<div class="wrow ${filtreCP.has(c.id)?'on':''}" data-c="${c.id}"><div class="wchk">✓</div>
+        <div class="wn"><b>${c.nom}</b><small>${nb} projet${nb>1?'s':''}</small></div></div>`;}).join('')}
+      ${sans?`<div class="wrow ${filtreCP.has('__sans')?'on':''}" data-c="__sans"><div class="wchk">✓</div>
+        <div class="wn"><b>Sans chargé de projet</b><small>${sans} projet${sans>1?'s':''}</small></div></div>`:''}
+    </div>
+    <div class="preview" id="fpv">—</div>
+    <button class="cta" id="fok">Appliquer</button>
+    <button class="link" id="fall">Tout afficher</button>
+    <button class="link" id="cx">Annuler</button>`);
+  const sel=new Set(filtreCP);
+  const upd=()=>{ $('#fl').querySelectorAll('.wrow').forEach(r=>r.classList.toggle('on',sel.has(r.dataset.c)));
+    const nb=sel.size?P.filter(x=>sel.has(x.cp||'__sans')).length:P.length;
+    $('#fpv').textContent=`${nb} projet${nb>1?'s':''} affiché${nb>1?'s':''} sur ${P.length}.`;
+    $('#fok').disabled=sel.size>0&&nb===0; };
+  $('#fl').querySelectorAll('.wrow').forEach(r=>r.onclick=()=>{ const c=r.dataset.c;
+    sel.has(c)?sel.delete(c):sel.add(c); upd(); });
+  $('#cx').onclick=close;
+  $('#fall').onclick=()=>{ filtreCP.clear(); close(); render(); };
+  $('#fok').onclick=()=>{ filtreCP.clear(); sel.forEach(c=>filtreCP.add(c)); close(); render(); };
+  upd();
+}
+$('#btnCP').onclick=openFiltreCP;
 $('#btnCrew').onclick=()=>openCrew(null);
 
 /* ---------- sous-traitants ---------- */
@@ -1077,7 +1216,8 @@ function openLoc(pid,preset){
   preset=preset||{};
   let cible=pid||P[0].id;
   const start0=preset.start||iso(((TODAY.getDay()+6)%7)>4?mondayOf(addDays(TODAY,7)):(TODAY>=anchor?TODAY:anchor));
-  openSheet(`<h3>Location de main-d'œuvre</h3><p>${pid?proj(pid).id+' — '+proj(pid).nom:'Choisis le projet, le sous-traitant et la période.'} Les hommes loués sont comptés à la journée complète.</p>
+  openSheet(`<h3>Affecter ${pid?'à '+pid:'sur un projet'}</h3><p>${pid?proj(pid).nom:'Choisis le projet, le sous-traitant et la période.'} Les hommes loués sont comptés à la journée complète.</p>
+    <div class="seg" id="srcSeg" style="margin-bottom:14px"><button data-prop>Forces propres</button><button class="on">Location de main-d'œuvre</button></div>
     ${pid?'':`<div class="fld"><label>Projet</label><select id="pSel">${P.map(x=>`<option value="${x.id}">${x.id} — ${x.nom}</option>`).join('')}</select></div>`}
     <div class="fld"><label>Sous-traitant</label><select id="sSel">${ST.map(x=>`<option value="${x.id}" ${preset.st===x.id?'selected':''}>${x.nom}</option>`).join('')}</select></div>
     <div class="fld"><label>Nombre d'hommes</label><input type="number" id="nb" value="${preset.nb||1}" min="1" max="50"></div>
@@ -1088,6 +1228,7 @@ function openLoc(pid,preset){
     <div class="fld"><label>Jours de la semaine</label><div class="days-pick" id="ad">${JJ.slice(0,5).map((j,i)=>`<button data-d="${i}" class="on">${j}</button>`).join('')}</div></div>
     <div class="preview" id="pv">—</div>
     <button class="cta" id="go">Louer</button><button class="link" id="cx">Annuler</button>`);
+  if($('#srcSeg')) $('#srcSeg').querySelector('[data-prop]').onclick=()=>{ close(); openAssign(pid); };
   const dows=new Set([0,1,2,3,4]);
   function target(){
     const a=parseIso($('#dStart').value||start0), b=parseIso($('#dEnd').value||start0), out=[];
@@ -1202,6 +1343,7 @@ function openAssign(pid,preset){
   let cible=pid||P[0].id;
   const start0=preset.start||iso(((TODAY.getDay()+6)%7)>4?mondayOf(addDays(TODAY,7)):(TODAY>=anchor?TODAY:anchor));
   openSheet(`<h3>Affecter ${pid?'à '+pid:'sur un projet'}</h3><p>${pid?proj(pid).nom:'Choisis le projet, les charpentiers et la période.'}</p>
+    <div class="seg" id="srcSeg" style="margin-bottom:14px"><button class="on">Forces propres</button><button data-loc>Location de main-d'œuvre</button></div>
     ${pid?'':`<div class="fld"><label>Projet</label><select id="pSel">${P.map(p=>`<option value="${p.id}">${p.id} — ${p.nom}</option>`).join('')}</select></div>`}
     <div class="crewquick" id="cq">${crews.map(c=>`<button data-c="${c.id}">+ ${c.nom}</button>`).join('')}<button data-c="__all">+ Tous</button></div>
     <div class="wlist" id="wl">${W.map(w=>{const c=crewOf(w.id),ff=freeFrom(w.id);
@@ -1220,6 +1362,7 @@ function openAssign(pid,preset){
     <div class="preview" id="pv">—</div>
     <button class="cta" id="go">Affecter</button><button class="link" id="cx">Annuler</button>`);
 
+  if($('#srcSeg')) $('#srcSeg').querySelector('[data-loc]').onclick=()=>{ close(); openLoc(pid); };
   const sel=new Set(preset.workers||[]), dows=new Set([0,1,2,3,4]);
   let endMode='dur', unit='sem', mode='jour';
   const paint=()=>$('#wl').querySelectorAll('.wrow').forEach(r=>r.classList.toggle('on',sel.has(r.dataset.w)));

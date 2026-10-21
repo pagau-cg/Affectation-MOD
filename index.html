@@ -142,7 +142,8 @@ main{padding:14px 20px 32px}
 .wkrow,.dayrow{display:grid;gap:0}
 .wkrow .wk{text-align:center;padding:3px 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);border-left:2px solid var(--line-strong)}
 .wkrow .wk:first-child{border-left:none}
-.dayrow .dh{text-align:center;padding:7px 3px;background:var(--surface);border:1px solid var(--line);border-left:none;font-weight:600;font-size:12.5px;color:var(--ink)}
+.dayrow .dh{text-align:center;padding:7px 3px;background:var(--surface);border:1px solid var(--line);border-left:none;font-weight:600;font-size:12.5px;color:var(--ink);cursor:pointer}
+.dayrow .dh:hover{background:var(--surface-2)}
 .dayrow .dh.wkstart{border-left:2px solid var(--line-strong)}
 .dayrow .dh:first-child{border-left:1px solid var(--line);border-radius:var(--r) 0 0 var(--r)}
 .dayrow .dh:last-child{border-radius:0 var(--r) var(--r) 0}
@@ -191,7 +192,20 @@ main{padding:14px 20px 32px}
 .pcell.wkstart{border-left:2px solid var(--line-strong)}
 .pcell.ferie{background:var(--ferie-bg)}
 .pcell.vac{background:var(--vac-bg)}
+.dayrow .dh.selcol{background:var(--surface-2);color:var(--ink);box-shadow:inset 0 2px 0 var(--ink)}
+.dayrow .dh.selcol small{color:var(--ink-2)}
+.pcell.selcol{background:var(--surface-2)}
 .pcell.drop-hot{outline:2px solid var(--green);outline-offset:-2px;background:var(--green-soft)}
+.poolday{display:flex;align-items:center;gap:6px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:7px 9px;margin-bottom:9px}
+.poolday .d{font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.25}
+.poolday .c{display:block;font-size:11px;font-weight:500;color:var(--muted)}
+.poolday .x{margin-left:auto;border:none;background:transparent;color:var(--muted);cursor:pointer;font-size:14px;font-weight:700;padding:0 3px;line-height:1}
+.poolday .x:hover{color:var(--ink)}
+.etat{margin-left:auto;font-size:10.5px;font-weight:700;border-radius:999px;padding:2px 7px;white-space:nowrap;flex:none}
+.etat.libre{background:var(--green-soft);color:var(--green)}
+.etat.demi{background:var(--ferie-bg);color:var(--ferie-fg)}
+.etat.pris{background:var(--surface-2);color:var(--muted)}
+.pw.occupe{opacity:.5}
 .wchip{background:var(--green-soft);border:1px solid var(--green-ring);border-radius:999px;padding:2px 8px;font-size:11.5px;font-weight:600;color:var(--green);display:flex;align-items:center;gap:4px;cursor:grab;touch-action:none;user-select:none;white-space:nowrap}
 .wchip.chef{background:var(--green);color:#fff;border-color:var(--green)}
 .wchip .hw{font-size:9.5px;font-weight:700;background:var(--green);color:#fff;border-radius:999px;padding:0 5px}
@@ -556,6 +570,15 @@ function heuresST(pid){
 let view='planning', horizon=4, anchor=mondayOf(TODAY), selDay=iso(TODAY), poolMode='w';
 const collapsed=new Set();   // projets dont le détail est fermé
 let monthRef=new Date(TODAY.getFullYear(),TODAY.getMonth(),15,12,0,0);
+let selCol=null;                       // journée sélectionnée dans le planning
+// la journée à laquelle le panneau des ressources se rapporte
+const jourCible=()=> view==='jour' ? selDay : (view==='planning' ? selCol : null);
+function etatJour(wid,k){
+  const c=cell(wid,k);
+  if(!c.am&&!c.pm) return {t:'libre',txt:'Libre',rang:0};
+  if(c.am&&c.pm)   return {t:'pris', txt:(c.am===c.pm?c.am:c.am+' / '+c.pm),rang:2};
+  return {t:'demi', txt:(c.am?'PM libre':'AM libre'),rang:1};
+}
 const moisDe=(y,m)=>new Date(y,m,15,12,0,0);
 if(((TODAY.getDay()+6)%7)>4) selDay=iso(mondayOf(addDays(TODAY,7)));
 
@@ -620,12 +643,14 @@ function roleTag(w){
 }
 let stQty={};
 function renderPoolST(){
-  let h=`<div class="sub">Location de main-d'œuvre. Règle le nombre d'hommes, puis glisse sur un projet — ou affecte sur une période.</div><div class="poollist">`;
+  const k=jourCible();
+  let h=(k?bandeauJour(k):'')+`<div class="sub">Location de main-d'œuvre. Règle le nombre d'hommes, puis glisse sur un projet — ou affecte sur une période.</div><div class="poollist">`;
   ST.forEach(x=>{
-    const jh=locJours((p,k,st)=>st===x.id), ou=[...new Set(Object.keys(LOC).filter(key=>LOC[key][x.id]).map(key=>key.split('|')[0]))];
+    const jh=locJours((p,kk,st)=>st===x.id), ou=[...new Set(Object.keys(LOC).filter(key=>LOC[key][x.id]).map(key=>key.split('|')[0]))];
+    const ceJour=k?locJours((p,kk,st)=>st===x.id&&kk===k):null;
     if(stQty[x.id]==null) stQty[x.id]=1;
     h+=`<div class="pc st" data-s="${x.id}">
-      <div class="pctop"><b>${x.nom}</b><span class="n">${jh} j-h</span></div>
+      <div class="pctop"><b>${x.nom}</b><span class="n">${k?`${ceJour} ce jour`:`${jh} j-h`}</span></div>
       <div class="mem">${x.tel||'—'}</div>
       <div class="where">${ou.length?ou.map(pid=>`<span class="wtag" style="background:${proj(pid).c}">${pid}</span>`).join(''):'<span class="wtag none">non affecté</span>'}</div>
       <div class="stq">Hommes <button class="pm" data-m="-1">−</button><span class="q">${stQty[x.id]}</span><button class="pm" data-m="1">＋</button></div>
@@ -644,31 +669,56 @@ function renderPoolST(){
     dragify(el,()=>({st:x.id,nb:stQty[x.id],label:x.nom+' ×'+stQty[x.id]}),()=>openST(x));
   });
 }
+function bandeauJour(k){
+  const n={libre:0,demi:0,pris:0};
+  W.forEach(w=>n[etatJour(w.id,k).t]++);
+  const ch=chomeDe(k);
+  return `<div class="poolday"><span class="d">${fmtLong(parseIso(k))}
+    <span class="c">${n.libre} libre${n.libre>1?'s':''} · ${n.demi} demi-journée${n.demi>1?'s':''} · ${n.pris} occupé${n.pris>1?'s':''}${ch?' · '+ch:''}</span></span>
+    <button class="x" id="poolX" title="Revenir à l'horizon complet">✕</button></div>`;
+}
 function renderPool(){
   if(poolMode==='s') return renderPoolST();
   if(poolMode==='c') return renderPoolCrews();
-  const days=horizonDays().slice(0,10);
-  let h=`<div class="sub">Glisse un charpentier sur un projet. Barres = ${days.length} premiers jours ouvrables.</div><div class="poollist">`;
-  W.forEach(w=>{
-    const dots=days.map(x=>{const n=halves(cell(w.id,x.k));return `<span class="dot ${n===2?'f':n===1?'h':''}"></span>`;}).join('');
-    const ff=freeFrom(w.id), c=crewOf(w.id);
-    h+=`<div class="pw ${ff?'':'full-busy'}" data-w="${w.id}" title="${w.nom} — ${w.role}">
-      <div class="pwtop"><b>${shortName(w)}</b>${roleTag(w)}${c?`<span class="tag eq">${isChef(w.id)?'★':''}${c.nom.replace('Équipe ','')}</span>`:''}
-      <span class="free ${ff?'':'none'}">${ff?(iso(ff)===TODAY_ISO?'auj.':fmtDate(ff)):'complet'}</span></div>
-      <div class="dots">${dots}</div></div>`;
-  });
+  const k=jourCible();
+  let h='';
+  if(k){
+    h+=bandeauJour(k)+`<div class="sub">Disponibilités de cette journée. Glisse un charpentier sur un projet.</div><div class="poollist">`;
+    const tri=W.map(w=>({w:w,e:etatJour(w.id,k)})).sort((a,b)=>a.e.rang-b.e.rang);
+    tri.forEach(({w,e})=>{
+      const c=crewOf(w.id);
+      // en mode « journée », l'étiquette d'équipe cède la place à l'état du jour
+      h+=`<div class="pw ${e.t==='pris'?'occupe':''}" data-w="${w.id}" title="${w.nom} — ${w.role}${c?' — '+c.nom:''}">
+        <div class="pwtop"><b>${shortName(w)}</b>${isChef(w.id)?'<span class="tag chef">★</span>':roleTag(w)}
+        <span class="etat ${e.t}">${e.txt}</span></div></div>`;
+    });
+  } else {
+    const days=horizonDays().slice(0,10);
+    h+=`<div class="sub">Glisse un charpentier sur un projet. Barres = ${days.length} premiers jours ouvrables. Clique un jour du tableau pour n'y voir que cette journée.</div><div class="poollist">`;
+    W.forEach(w=>{
+      const dots=days.map(x=>{const n=halves(cell(w.id,x.k));return `<span class="dot ${n===2?'f':n===1?'h':''}"></span>`;}).join('');
+      const ff=freeFrom(w.id), c=crewOf(w.id);
+      h+=`<div class="pw ${ff?'':'full-busy'}" data-w="${w.id}" title="${w.nom} — ${w.role}">
+        <div class="pwtop"><b>${shortName(w)}</b>${roleTag(w)}${c?`<span class="tag eq">${isChef(w.id)?'★':''}${c.nom.replace('Équipe ','')}</span>`:''}
+        <span class="free ${ff?'':'none'}">${ff?(iso(ff)===TODAY_ISO?'auj.':fmtDate(ff)):'complet'}</span></div>
+        <div class="dots">${dots}</div></div>`;
+    });
+  }
   $('#poolBody').innerHTML=h+`</div>`;
+  if($('#poolX')) $('#poolX').onclick=()=>{ selCol=null; if(view==='jour') setView('planning'); else render(); };
   $('#poolBody').querySelectorAll('.pw').forEach(el=>{
     const wid=el.dataset.w;
     dragify(el,()=>({wids:[wid],label:shortName(wrk(wid))}));
   });
 }
 function renderPoolCrews(){
-  let h=`<div class="sub">Glisse une équipe sur un projet, ou affecte-la sur une période. Tape pour la modifier.</div><div class="poollist">`;
+  const k=jourCible();
+  let h=(k?bandeauJour(k):'')+`<div class="sub">Glisse une équipe sur un projet, ou affecte-la sur une période. Tape pour la modifier.</div><div class="poollist">`;
   crews.forEach(c=>{
     const where=projetsDe(c.membres);
+    const libres=k?c.membres.filter(m=>etatJour(m,k).t==='libre').length:null;
     h+=`<div class="pc" data-c="${c.id}">
-      <div class="pctop"><b>${c.nom}</b><span class="n">${c.membres.length} pers.</span></div>
+      <div class="pctop"><b>${c.nom}</b><span class="n">${k?`${libres}/${c.membres.length} libres`:`${c.membres.length} pers.`}</span></div>
       <div class="mem">${c.membres.map(m=>`<span class="${c.chef===m?'k':''}">${c.chef===m?'★ ':''}${shortName(wrk(m))}</span>`).join(' · ')}</div>
       <div class="where">${where.length?where.map(p=>`<span class="wtag" style="background:${proj(p).c}">${p}</span>`).join(''):'<span class="wtag none">non affectée</span>'}</div>
       <div class="act"><button data-a="aff">Affecter…</button><button data-a="ed">Modifier</button></div></div>`;
@@ -724,7 +774,7 @@ function renderPlanning(){
   for(let w=0;w<horizon;w++) h+=`<div class="wk">Sem. ${fmtDate(addDays(anchor,w*7))}</div>`;
   h+=`</div><div class="dayrow" style="grid-template-columns:${cols}">`;
   days.forEach(x=>{ const fe=ferieDe(x.k), va=vacanceDe(x.k);
-    h+=`<div class="dh ${x.first?'wkstart':''} ${fe?'ferie':va?'vac':x.k===TODAY_ISO?'today':''}" title="${fe||(va?va.nom:'')}">`
+    h+=`<div class="dh ${x.first?'wkstart':''} ${x.k===selCol?'selcol':fe?'ferie':va?'vac':x.k===TODAY_ISO?'today':''}" data-col="${x.k}" title="${fe||(va?va.nom:'')||'Sélectionner cette journée'}">`
       +`${JJ[(x.d.getDay()+6)%7]}<small>${fmtDate(x.d)}</small>${fe?`<em>${fe}</em>`:va?`<em>Vacances</em>`:''}</div>`; });
   h+=`</div></div>`;
   P.forEach(p=>{
@@ -733,7 +783,7 @@ function renderPlanning(){
       const mem=W.filter(w=>{const c=cell(w.id,x.k);return c.am===p.id||c.pm===p.id;});
       const chips=mem.map(w=>{const c=cell(w.id,x.k);const tag=(c.am===p.id&&c.pm===p.id)?'':(c.am===p.id?'AM':'PM');
         return `<div class="wchip ${isChef(w.id)?'chef':''}" data-chip data-w="${w.id}">${isChef(w.id)?'★ ':''}${shortName(w)}${tag?`<span class="hw">${tag}</span>`:''}</div>`;}).join('');
-      h+=`<div class="pcell ${x.first?'wkstart':''} ${ferieDe(x.k)?'ferie':vacanceDe(x.k)?'vac':''}" data-drop data-proj="${p.id}" data-k="${x.k}">${chips}${locChips(p.id,x.k)}</div>`;
+      h+=`<div class="pcell ${x.first?'wkstart':''} ${x.k===selCol?'selcol':ferieDe(x.k)?'ferie':vacanceDe(x.k)?'vac':''}" data-drop data-proj="${p.id}" data-k="${x.k}">${chips}${locChips(p.id,x.k)}</div>`;
     });
     h+=`</div></div>`;
   });
@@ -785,6 +835,8 @@ function locChips(pid,k){
 function wire(){
   $('#board').querySelectorAll('.passign').forEach(b=>b.onclick=()=>openAssign(b.dataset.proj));
   $('#board').querySelectorAll('.staff').forEach(b=>b.onclick=()=>openCM(b.dataset.cm));
+  $('#board').querySelectorAll('.dh[data-col]').forEach(b=>b.onclick=()=>{
+    selCol = selCol===b.dataset.col ? null : b.dataset.col; render(); });
   $('#board').querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{
     const id=b.dataset.tog; collapsed.has(id)?collapsed.delete(id):collapsed.add(id); render(); });
   $('#board').querySelectorAll('.ploc').forEach(b=>b.onclick=()=>openLoc(b.dataset.proj));
